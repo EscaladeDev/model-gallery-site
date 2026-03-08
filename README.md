@@ -1,37 +1,59 @@
 # Escalade Model Gallery Site
 
-A premium-style static 3D model catalog built for GitHub Pages.
+GitHub Pages site for browsing, previewing, searching, and downloading 3D models from the Escalade model library.
 
-This site displays a searchable library of 3D models, extracts tags from filenames, shows thumbnails or live previews, and links each model to downloadable release assets hosted through GitHub Releases.
+This repository contains the front-end website and generated catalog data for the public gallery. The site presents 3D models in a premium-style searchable interface and links downloads to release assets hosted in the companion asset repository:
+
+`https://github.com/EscaladeDev/model-library-assets`
+
+## Purpose
+
+This repository powers the public model catalog experience.
+
+It is responsible for:
+
+- rendering the gallery UI
+- loading generated model metadata
+- searching and filtering models by tags
+- displaying thumbnails or live preview fallbacks
+- showing featured content such as **Model of the Month**
+- linking models to downloadable GitHub Release assets
+
+## Related Repository
+
+Model files and downloadable release assets are stored in:
+
+`https://github.com/EscaladeDev/model-library-assets`
+
+This split keeps the website lightweight while allowing model downloads to be distributed through GitHub Releases.
 
 ## Features
 
-- Fast static site deployment on GitHub Pages
-- Search and filter models by tags
-- Tags automatically extracted from filenames
+- Static site deployment through GitHub Pages
+- Search and tag-based filtering
+- Automatic tag extraction from filenames
   - Example: `human-guard.stl` → `human`, `guard`
-- Premium gallery layout with responsive cards
+- Responsive premium gallery layout
 - Thumbnail-first preview system
-- Automatic fallback to live 3D preview when no thumbnail exists
+- Live 3D preview fallback when no thumbnail exists
 - Dedicated model detail pages
-- “Model of the Month” / featured spotlight support
-- Manifest-driven architecture for efficient loading at scale
-- Download delivery via GitHub Releases
+- Featured spotlight support
+- Manifest-driven catalog architecture for efficient loading
 
 ## How It Works
 
-This repo contains the front-end site and generated catalog data.
+The site does **not** browse raw GitHub folders live in the browser.
 
-The site does **not** browse raw repository folders live in the browser. Instead, it reads generated metadata files such as `manifest.json` and uses those to render the catalog quickly and consistently.
+Instead, it reads generated catalog files such as `manifest.json` and uses those to render the site quickly and consistently.
 
 ### Content flow
 
-1. Model files are stored and released from the asset repo
-2. Release asset URLs are resolved into catalog data
-3. A generated manifest is built for the site
+1. Model files are added to the asset repository
+2. Downloadable files are attached to GitHub Releases in the asset repository
+3. Catalog data is generated for the site
 4. GitHub Pages serves the static front end
 
-## Repo Structure
+## Repository Structure
 
 ```text
 src/                  Front-end source
@@ -39,5 +61,5 @@ public/               Static public assets
 public/data/          Generated catalog data
 public/thumbnails/    Preview thumbnails
 scripts/              Manifest/build helper scripts
-content/featured/     Featured and spotlight content
+content/featured/     Featured content and spotlight data
 .github/workflows/    Build and deployment workflows
