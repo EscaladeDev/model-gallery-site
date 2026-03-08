@@ -4,16 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Escalade Model Gallery</title>
-  <meta
-    name="description"
-    content="Browse, preview, search, and download 3D models from the Escalade model library."
-  />
+  <meta name="description" content="Browse, preview, search, and download 3D models from the Escalade model library." />
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <header class="site-header">
     <div class="container site-header-inner">
-      <a class="brand" href="#top" aria-label="Escalade Model Gallery home">
+      <a class="brand" href="#top">
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-copy">
           <span class="brand-title">Escalade Model Gallery</span>
@@ -22,16 +19,9 @@
       </a>
 
       <nav class="nav" aria-label="Primary">
-        <a class="nav-link" href="#featured">Featured</a>
         <a class="nav-link" href="#browse">Browse</a>
-        <a
-          class="button"
-          href="https://github.com/EscaladeDev/model-library-assets/releases"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Releases
-        </a>
+        <a class="nav-link" href="#featured">Featured</a>
+        <a class="button" href="https://github.com/EscaladeDev/model-library-assets" target="_blank" rel="noreferrer">Asset Repo</a>
       </nav>
     </div>
   </header>
@@ -40,62 +30,33 @@
     <section class="hero">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <span class="eyebrow">Searchable • Tag-based • GitHub Release-backed</span>
+          <span class="eyebrow">Searchable • Fast • Repo-backed</span>
           <h1>Browse 3D models with a premium library feel.</h1>
           <p>
-            Explore downloadable models by filename tags, jump straight into featured releases,
-            and filter the library instantly without digging through raw folders.
+            Search by title or tags pulled from filenames, preview models directly in the browser,
+            and download the source files from the asset repository.
           </p>
 
           <div class="search-shell">
-            <input
-              id="hero-search"
-              class="search-input"
-              type="search"
-              placeholder="Search models, tags, filenames..."
-              aria-label="Search models"
-            />
-            <button id="hero-search-button" class="button button-primary" type="button">
-              Browse Results
-            </button>
+            <input id="hero-search" class="search-input" type="search" placeholder="Search models or tags..." aria-label="Search models" />
+            <button id="hero-search-button" class="button button-primary" type="button">Search</button>
           </div>
 
           <div class="hero-actions">
             <a class="button button-primary" href="#browse">Browse Library</a>
-            <a
-              class="button"
-              href="https://github.com/EscaladeDev/model-library-assets/releases"
-              target="_blank"
-              rel="noreferrer"
-            >
-              View Downloads
-            </a>
+            <a class="button" href="https://github.com/EscaladeDev/model-library-assets" target="_blank" rel="noreferrer">Open Asset Repo</a>
           </div>
         </div>
 
         <aside class="spotlight-card" id="featured">
           <span class="badge" id="featured-badge">Model of the Month</span>
-
-          <div class="spotlight-preview" id="featured-preview" aria-hidden="true">
-            <div class="preview-wireframe"></div>
-          </div>
-
+          <div class="spotlight-preview" id="featured-preview"></div>
           <h2 id="featured-title">Loading featured model...</h2>
           <p id="featured-blurb">Featured content is loading.</p>
-
           <div class="tags" id="featured-tags"></div>
-
-          <div class="hero-actions featured-actions">
+          <div class="hero-actions">
             <a class="button button-primary" id="featured-view-link" href="#browse">Find in Library</a>
-            <a
-              class="button"
-              id="featured-download-link"
-              href="https://github.com/EscaladeDev/model-library-assets/releases"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Download
-            </a>
+            <a class="button" id="featured-download-link" href="#browse">Download File</a>
           </div>
         </aside>
       </div>
@@ -106,21 +67,12 @@
         <div class="section-header">
           <div>
             <h2 class="section-title">Browse library</h2>
-            <p class="section-subtitle">
-              Search by title, filename, or tags parsed from model filenames like
-              <code>human-guard.stl</code>.
-            </p>
+            <p class="section-subtitle">Filter by title, filename, format, or tags. If no thumbnail exists, the card renders a live STL preview.</p>
           </div>
         </div>
 
         <div class="filter-bar">
-          <input
-            id="gallery-search"
-            class="input"
-            type="search"
-            placeholder="Filter by title, filename, or tag"
-            aria-label="Filter models"
-          />
+          <input id="gallery-search" class="input" type="search" placeholder="Filter by title, filename, or tag" aria-label="Filter models" />
           <select id="sort-select" class="select" aria-label="Sort models">
             <option value="featured">Sort: Featured</option>
             <option value="newest">Sort: Newest</option>
@@ -130,15 +82,12 @@
             <option value="all">All formats</option>
             <option value="stl">STL</option>
             <option value="glb">GLB</option>
-            <option value="gltf">GLTF</option>
             <option value="obj">OBJ</option>
           </select>
         </div>
 
         <div class="chip-row" id="popular-tags" aria-label="Popular tags"></div>
-
         <div class="gallery-grid" id="gallery-grid"></div>
-
         <div id="empty-state" class="empty-state hidden">
           <h3>No matching models</h3>
           <p>Try a different search term, format, or tag.</p>
@@ -152,24 +101,16 @@
       <div class="footer-panel">
         <div>
           <strong>Escalade Model Gallery</strong>
-          <div>Premium static model catalog for GitHub Pages.</div>
+          <div>Static model catalog for GitHub Pages.</div>
         </div>
-
         <div class="footer-links">
-          <a href="https://github.com/EscaladeDev/model-gallery-site" target="_blank" rel="noreferrer">
-            Site Repo
-          </a>
-          <a href="https://github.com/EscaladeDev/model-library-assets" target="_blank" rel="noreferrer">
-            Asset Repo
-          </a>
-          <a href="https://github.com/EscaladeDev/model-library-assets/releases" target="_blank" rel="noreferrer">
-            Releases
-          </a>
+          <a href="https://github.com/EscaladeDev/model-gallery-site" target="_blank" rel="noreferrer">Site Repo</a>
+          <a href="https://github.com/EscaladeDev/model-library-assets" target="_blank" rel="noreferrer">Asset Repo</a>
         </div>
       </div>
     </div>
   </footer>
 
-  <script src="./main.js" defer></script>
+  <script type="module" src="./main.js"></script>
 </body>
 </html>

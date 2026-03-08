@@ -1,16 +1,22 @@
 {
   "models": [
-  {
-    "slug": "green-dragon",
-    "title": "Green Dragon",
-    "filename": "green-dragon.stl",
-    "format": "stl",
-    "tags": ["dragon", "green"],
-    "thumbnail": "/thumbnails/",
-    "downloadUrl": "https://github.com/EscaladeDev/assets/stl/green-dragon.stl",
-    "description": "",
-    "dateAdded": "2026-03-08",
-    "featured": false
-  }
+    {
+      "slug": "green-dragon",
+      "title": "Green Dragon",
+      "filename": "green-dragon.stl",
+      "format": "stl",
+      "tags": [
+        "dragon",
+        "green"
+      ],
+      "thumbnail": "",
+      "assetPath": "assets/stl/green-dragon.stl",
+      "downloadUrl": "https://raw.githubusercontent.com/EscaladeDev/model-library-assets/main/assets/stl/green-dragon.stl",
+      "browserUrl": "https://github.com/EscaladeDev/model-library-assets/blob/main/assets/stl/green-dragon.stl",
+      "description": "A green dragon model rendered directly from the STL when no thumbnail is present.",
+      "dateAdded": "2026-03-08",
+      "featured": true,
+      "previewable": true
+    }
   ]
 }
