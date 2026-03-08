@@ -2,643 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Escalade Model Gallery</title>
   <meta
     name="description"
     content="Browse, preview, search, and download 3D models from the Escalade model library."
   />
-
-  <style>
-    :root {
-      --bg: #0b0d12;
-      --bg-elev: #121722;
-      --bg-elev-2: #171d2a;
-      --panel: rgba(255, 255, 255, 0.05);
-      --panel-strong: rgba(255, 255, 255, 0.08);
-      --border: rgba(255, 255, 255, 0.10);
-      --text: #eef2ff;
-      --text-soft: #b5bfd6;
-      --text-dim: #8993ab;
-      --accent: #7c9cff;
-      --accent-2: #9f7cff;
-      --success: #78d6a3;
-      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
-      --radius-xl: 24px;
-      --radius-lg: 18px;
-      --radius-md: 14px;
-      --max: 1400px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at top, rgba(124, 156, 255, 0.16), transparent 28%),
-        radial-gradient(circle at 80% 20%, rgba(159, 124, 255, 0.14), transparent 24%),
-        linear-gradient(180deg, #0b0d12 0%, #090b10 100%);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    .container {
-      width: min(calc(100% - 32px), var(--max));
-      margin: 0 auto;
-    }
-
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      backdrop-filter: blur(18px);
-      background: rgba(11, 13, 18, 0.72);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .site-header-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      min-height: 72px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-    }
-
-    .brand-mark {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      background:
-        linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 10px 28px rgba(124, 156, 255, 0.32);
-      flex: 0 0 auto;
-    }
-
-    .brand-copy {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.1;
-    }
-
-    .brand-title {
-      font-size: 0.98rem;
-    }
-
-    .brand-subtitle {
-      font-size: 0.78rem;
-      color: var(--text-dim);
-      font-weight: 500;
-    }
-
-    .nav {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .nav-link {
-      color: var(--text-soft);
-      font-size: 0.95rem;
-      padding: 10px 12px;
-      border-radius: 12px;
-      transition: 0.2s ease;
-    }
-
-    .nav-link:hover {
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      min-height: 46px;
-      padding: 0 18px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text);
-      font-weight: 600;
-      transition: 0.2s ease;
-      cursor: pointer;
-    }
-
-    .button:hover {
-      transform: translateY(-1px);
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.16);
-    }
-
-    .button-primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      border: none;
-      box-shadow: 0 16px 36px rgba(124, 156, 255, 0.28);
-    }
-
-    .button-primary:hover {
-      filter: brightness(1.04);
-    }
-
-    .hero {
-      padding: 56px 0 30px;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 24px;
-      align-items: stretch;
-    }
-
-    .hero-copy,
-    .spotlight-card,
-    .panel {
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.06),
-        rgba(255, 255, 255, 0.03)
-      );
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius-xl);
-    }
-
-    .hero-copy {
-      padding: 36px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.82rem;
-      color: var(--text-soft);
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      padding: 10px 14px;
-      border-radius: 999px;
-      margin-bottom: 18px;
-    }
-
-    .hero h1 {
-      margin: 0 0 16px;
-      font-size: clamp(2.2rem, 5vw, 4.6rem);
-      line-height: 0.96;
-      letter-spacing: -0.04em;
-      max-width: 10ch;
-    }
-
-    .hero p {
-      margin: 0;
-      max-width: 60ch;
-      color: var(--text-soft);
-      font-size: 1.05rem;
-      line-height: 1.7;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 28px;
-    }
-
-    .search-shell {
-      margin-top: 28px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-    }
-
-    .search-input {
-      width: 100%;
-      min-height: 52px;
-      border: none;
-      outline: none;
-      background: transparent;
-      color: var(--text);
-      font-size: 1rem;
-      padding: 0 8px;
-    }
-
-    .search-input::placeholder {
-      color: var(--text-dim);
-    }
-
-    .spotlight-card {
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      min-height: 100%;
-    }
-
-    .spotlight-preview {
-      min-height: 290px;
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      background:
-        radial-gradient(circle at 50% 35%, rgba(124, 156, 255, 0.22), transparent 38%),
-        linear-gradient(180deg, #1b2232 0%, #101521 100%);
-      display: grid;
-      place-items: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .preview-wireframe {
-      width: min(72%, 280px);
-      aspect-ratio: 1 / 1;
-      border: 2px solid rgba(255, 255, 255, 0.14);
-      border-radius: 24px;
-      transform: rotate(18deg);
-      box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.04) inset,
-        0 0 80px rgba(124, 156, 255, 0.16);
-      position: relative;
-    }
-
-    .preview-wireframe::before,
-    .preview-wireframe::after {
-      content: "";
-      position: absolute;
-      inset: 14%;
-      border: 1px solid rgba(255, 255, 255, 0.10);
-      border-radius: 18px;
-    }
-
-    .preview-wireframe::after {
-      inset: 28%;
-      border-radius: 14px;
-    }
-
-    .badge {
-      display: inline-flex;
-      width: fit-content;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      color: var(--text-soft);
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-    }
-
-    .spotlight-card h2 {
-      margin: 0;
-      font-size: 1.5rem;
-      letter-spacing: -0.03em;
-    }
-
-    .spotlight-card p {
-      margin: 0;
-      color: var(--text-soft);
-      line-height: 1.7;
-    }
-
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .tag {
-      padding: 9px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-soft);
-      font-size: 0.86rem;
-    }
-
-    .section {
-      padding: 16px 0 28px;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 18px;
-    }
-
-    .section-title {
-      margin: 0;
-      font-size: clamp(1.5rem, 3vw, 2.2rem);
-      letter-spacing: -0.03em;
-    }
-
-    .section-subtitle {
-      margin: 8px 0 0;
-      color: var(--text-soft);
-      max-width: 58ch;
-      line-height: 1.7;
-    }
-
-    .filter-bar {
-      display: grid;
-      grid-template-columns: 1.2fr auto auto;
-      gap: 12px;
-      padding: 14px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.04);
-      margin-bottom: 18px;
-      position: sticky;
-      top: 84px;
-      z-index: 20;
-      backdrop-filter: blur(12px);
-    }
-
-    .input,
-    .select {
-      width: 100%;
-      min-height: 48px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text);
-      padding: 0 14px;
-      outline: none;
-    }
-
-    .input::placeholder {
-      color: var(--text-dim);
-    }
-
-    .chip-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-
-    .chip {
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-soft);
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .chip:hover {
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .card {
-      border-radius: 22px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.05),
-        rgba(255, 255, 255, 0.03)
-      );
-      box-shadow: var(--shadow);
-      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(255, 255, 255, 0.18);
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.07),
-        rgba(255, 255, 255, 0.04)
-      );
-    }
-
-    .card-preview {
-      aspect-ratio: 1 / 1;
-      position: relative;
-      background:
-        radial-gradient(circle at 50% 35%, rgba(124, 156, 255, 0.16), transparent 38%),
-        linear-gradient(180deg, #1a2030 0%, #101520 100%);
-      border-bottom: 1px solid var(--border);
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-    }
-
-    .card-preview-placeholder {
-      width: 58%;
-      aspect-ratio: 1 / 1;
-      border-radius: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      transform: rotate(16deg);
-      opacity: 0.8;
-    }
-
-    .card-badge {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      z-index: 1;
-      font-size: 0.72rem;
-      padding: 7px 10px;
-    }
-
-    .card-body {
-      padding: 16px;
-    }
-
-    .card-title-row {
-      display: flex;
-      align-items: start;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .card h3 {
-      margin: 0;
-      font-size: 1.04rem;
-      letter-spacing: -0.02em;
-    }
-
-    .card-meta {
-      color: var(--text-dim);
-      font-size: 0.85rem;
-      white-space: nowrap;
-    }
-
-    .card-text {
-      margin: 0 0 14px;
-      color: var(--text-soft);
-      font-size: 0.94rem;
-      line-height: 1.65;
-    }
-
-    .card-tags {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-
-    .card-tag {
-      font-size: 0.78rem;
-      color: var(--text-soft);
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .card-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .shelf-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .shelf-card {
-      padding: 22px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.04);
-      box-shadow: var(--shadow);
-    }
-
-    .shelf-card h3 {
-      margin: 12px 0 8px;
-      font-size: 1.08rem;
-    }
-
-    .shelf-card p {
-      margin: 0;
-      color: var(--text-soft);
-      line-height: 1.7;
-    }
-
-    .site-footer {
-      padding: 36px 0 46px;
-      color: var(--text-dim);
-    }
-
-    .footer-panel {
-      padding: 22px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.04);
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .footer-links a {
-      color: var(--text-soft);
-    }
-
-    @media (max-width: 1120px) {
-      .hero-grid,
-      .gallery-grid,
-      .shelf-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .hero-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 780px) {
-      .site-header-inner,
-      .section-header,
-      .footer-panel {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .filter-bar {
-        grid-template-columns: 1fr;
-      }
-
-      .gallery-grid,
-      .shelf-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-copy,
-      .spotlight-card {
-        padding: 22px;
-      }
-
-      .hero {
-        padding-top: 28px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <header class="site-header">
     <div class="container site-header-inner">
-      <a class="brand" href="#">
+      <a class="brand" href="#top" aria-label="Escalade Model Gallery home">
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-copy">
           <span class="brand-title">Escalade Model Gallery</span>
@@ -647,9 +22,8 @@
       </a>
 
       <nav class="nav" aria-label="Primary">
-        <a class="nav-link" href="#browse">Browse</a>
         <a class="nav-link" href="#featured">Featured</a>
-        <a class="nav-link" href="#collections">Collections</a>
+        <a class="nav-link" href="#browse">Browse</a>
         <a
           class="button"
           href="https://github.com/EscaladeDev/model-library-assets/releases"
@@ -662,25 +36,28 @@
     </div>
   </header>
 
-  <main>
+  <main id="top">
     <section class="hero">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <span class="eyebrow">Searchable • Curated • GitHub Release-backed</span>
+          <span class="eyebrow">Searchable • Tag-based • GitHub Release-backed</span>
           <h1>Browse 3D models with a premium library feel.</h1>
           <p>
-            Explore downloadable models by tag, spotlight featured releases, and
-            preview assets in a polished static catalog designed to scale cleanly.
+            Explore downloadable models by filename tags, jump straight into featured releases,
+            and filter the library instantly without digging through raw folders.
           </p>
 
           <div class="search-shell">
             <input
+              id="hero-search"
               class="search-input"
               type="search"
-              placeholder="Search models, tags, collections..."
+              placeholder="Search models, tags, filenames..."
               aria-label="Search models"
             />
-            <button class="button button-primary" type="button">Search</button>
+            <button id="hero-search-button" class="button button-primary" type="button">
+              Browse Results
+            </button>
           </div>
 
           <div class="hero-actions">
@@ -697,28 +74,22 @@
         </div>
 
         <aside class="spotlight-card" id="featured">
-          <span class="badge">Model of the Month</span>
+          <span class="badge" id="featured-badge">Model of the Month</span>
 
-          <div class="spotlight-preview" aria-hidden="true">
+          <div class="spotlight-preview" id="featured-preview" aria-hidden="true">
             <div class="preview-wireframe"></div>
           </div>
 
-          <h2>Human Guard</h2>
-          <p>
-            A featured city-watch model with clean tabletop readability, a strong
-            silhouette, and a polished presentation slot built for spotlight content.
-          </p>
+          <h2 id="featured-title">Loading featured model...</h2>
+          <p id="featured-blurb">Featured content is loading.</p>
 
-          <div class="tags">
-            <span class="tag">human</span>
-            <span class="tag">guard</span>
-            <span class="tag">featured</span>
-          </div>
+          <div class="tags" id="featured-tags"></div>
 
-          <div class="hero-actions">
-            <a class="button button-primary" href="#browse">View Model</a>
+          <div class="hero-actions featured-actions">
+            <a class="button button-primary" id="featured-view-link" href="#browse">Find in Library</a>
             <a
               class="button"
+              id="featured-download-link"
               href="https://github.com/EscaladeDev/model-library-assets/releases"
               target="_blank"
               rel="noreferrer"
@@ -730,204 +101,47 @@
       </div>
     </section>
 
-    <section class="section">
-      <div class="container">
-        <div class="section-header">
-          <div>
-            <h2 class="section-title">Curated shelves</h2>
-            <p class="section-subtitle">
-              Featured groups make the catalog feel intentional instead of like a raw file dump.
-            </p>
-          </div>
-        </div>
-
-        <div class="shelf-grid" id="collections">
-          <article class="shelf-card">
-            <span class="badge">New</span>
-            <h3>Latest additions</h3>
-            <p>Freshly added models surfaced from the newest release batch.</p>
-          </article>
-
-          <article class="shelf-card">
-            <span class="badge">Collection</span>
-            <h3>Guards & soldiers</h3>
-            <p>Organized sets grouped by shared tags, role, or theme.</p>
-          </article>
-
-          <article class="shelf-card">
-            <span class="badge">Spotlight</span>
-            <h3>Editor’s picks</h3>
-            <p>Manual homepage highlights for premium curation and recurring features.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
     <section class="section" id="browse">
       <div class="container">
         <div class="section-header">
           <div>
             <h2 class="section-title">Browse library</h2>
             <p class="section-subtitle">
-              This starter layout is ready to connect to <code>data/manifest.json</code> and render
-              real models, tags, thumbnails, and fallback live previews.
+              Search by title, filename, or tags parsed from model filenames like
+              <code>human-guard.stl</code>.
             </p>
           </div>
         </div>
 
         <div class="filter-bar">
           <input
+            id="gallery-search"
             class="input"
             type="search"
             placeholder="Filter by title, filename, or tag"
             aria-label="Filter models"
           />
-          <select class="select" aria-label="Sort models">
-            <option>Sort: Featured</option>
-            <option>Sort: Newest</option>
-            <option>Sort: A–Z</option>
+          <select id="sort-select" class="select" aria-label="Sort models">
+            <option value="featured">Sort: Featured</option>
+            <option value="newest">Sort: Newest</option>
+            <option value="az">Sort: A–Z</option>
           </select>
-          <select class="select" aria-label="Format filter">
-            <option>All formats</option>
-            <option>STL</option>
-            <option>GLB</option>
-            <option>OBJ</option>
+          <select id="format-select" class="select" aria-label="Format filter">
+            <option value="all">All formats</option>
+            <option value="stl">STL</option>
+            <option value="glb">GLB</option>
+            <option value="gltf">GLTF</option>
+            <option value="obj">OBJ</option>
           </select>
         </div>
 
-        <div class="chip-row" aria-label="Popular tags">
-          <button class="chip" type="button">human</button>
-          <button class="chip" type="button">guard</button>
-          <button class="chip" type="button">monster</button>
-          <button class="chip" type="button">terrain</button>
-          <button class="chip" type="button">featured</button>
-          <button class="chip" type="button">new</button>
-        </div>
+        <div class="chip-row" id="popular-tags" aria-label="Popular tags"></div>
 
-        <div class="gallery-grid">
-          <article class="card">
-            <div class="card-preview">
-              <span class="badge card-badge">Thumbnail</span>
-              <div class="card-preview-placeholder"></div>
-            </div>
-            <div class="card-body">
-              <div class="card-title-row">
-                <h3>Human Guard</h3>
-                <span class="card-meta">STL</span>
-              </div>
-              <p class="card-text">
-                Example card for a model with a pre-generated thumbnail.
-              </p>
-              <div class="card-tags">
-                <span class="card-tag">human</span>
-                <span class="card-tag">guard</span>
-              </div>
-              <div class="card-actions">
-                <a class="button button-primary" href="#">View</a>
-                <a
-                  class="button"
-                  href="https://github.com/EscaladeDev/model-library-assets/releases"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Download
-                </a>
-              </div>
-            </div>
-          </article>
+        <div class="gallery-grid" id="gallery-grid"></div>
 
-          <article class="card">
-            <div class="card-preview">
-              <span class="badge card-badge">Live Preview</span>
-              <div class="card-preview-placeholder"></div>
-            </div>
-            <div class="card-body">
-              <div class="card-title-row">
-                <h3>Orc Raider</h3>
-                <span class="card-meta">STL</span>
-              </div>
-              <p class="card-text">
-                Example card for a model that would fall back to an interactive preview when no thumbnail exists.
-              </p>
-              <div class="card-tags">
-                <span class="card-tag">orc</span>
-                <span class="card-tag">raider</span>
-              </div>
-              <div class="card-actions">
-                <a class="button button-primary" href="#">View</a>
-                <a
-                  class="button"
-                  href="https://github.com/EscaladeDev/model-library-assets/releases"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Download
-                </a>
-              </div>
-            </div>
-          </article>
-
-          <article class="card">
-            <div class="card-preview">
-              <span class="badge card-badge">Featured</span>
-              <div class="card-preview-placeholder"></div>
-            </div>
-            <div class="card-body">
-              <div class="card-title-row">
-                <h3>Town Crate</h3>
-                <span class="card-meta">GLB</span>
-              </div>
-              <p class="card-text">
-                Example prop entry with tags parsed from its filename and surfaced through the catalog manifest.
-              </p>
-              <div class="card-tags">
-                <span class="card-tag">town</span>
-                <span class="card-tag">crate</span>
-              </div>
-              <div class="card-actions">
-                <a class="button button-primary" href="#">View</a>
-                <a
-                  class="button"
-                  href="https://github.com/EscaladeDev/model-library-assets/releases"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Download
-                </a>
-              </div>
-            </div>
-          </article>
-
-          <article class="card">
-            <div class="card-preview">
-              <span class="badge card-badge">Placeholder</span>
-              <div class="card-preview-placeholder"></div>
-            </div>
-            <div class="card-body">
-              <div class="card-title-row">
-                <h3>Stone Archway</h3>
-                <span class="card-meta">OBJ</span>
-              </div>
-              <p class="card-text">
-                Example fallback state when neither a thumbnail nor a live preview is available.
-              </p>
-              <div class="card-tags">
-                <span class="card-tag">stone</span>
-                <span class="card-tag">archway</span>
-              </div>
-              <div class="card-actions">
-                <a class="button button-primary" href="#">View</a>
-                <a
-                  class="button"
-                  href="https://github.com/EscaladeDev/model-library-assets/releases"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Download
-                </a>
-              </div>
-            </div>
-          </article>
+        <div id="empty-state" class="empty-state hidden">
+          <h3>No matching models</h3>
+          <p>Try a different search term, format, or tag.</p>
         </div>
       </div>
     </section>
@@ -955,5 +169,7 @@
       </div>
     </div>
   </footer>
+
+  <script src="./main.js" defer></script>
 </body>
 </html>
