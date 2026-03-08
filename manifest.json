@@ -1,11 +1,11 @@
 {
-  "slug": "human-guard",
-  "title": "Human Guard",
-  "filename": "human-guard.stl",
+  "slug": "green-dragon",
+  "title": "Green Dragon",
+  "filename": "green-dragon.stl",
   "format": "stl",
-  "tags": ["human", "guard"],
-  "thumbnail": "/thumbnails/human-guard.webp",
-  "downloadUrl": "https://github.com/EscaladeDev/model-library-assets/releases/download/march-2026/human-guard.stl",
+  "tags": ["dragon", "green"],
+  "thumbnail": "/thumbnails/",
+  "downloadUrl": "https://github.com/EscaladeDev/assets/stl/green-dragon.stl",
   "description": "",
   "dateAdded": "2026-03-08",
   "featured": false
