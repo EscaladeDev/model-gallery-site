@@ -1,5 +1,6 @@
 import * as THREE from 'https://esm.sh/three@0.160.0';
 import { STLLoader } from 'https://esm.sh/three@0.160.0/examples/jsm/loaders/STLLoader.js';
+import { OrbitControls } from 'https://esm.sh/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
 const state = {
   models: [],
@@ -265,34 +266,54 @@ function mountStlViewer(container, url, statusEl) {
       });
       const mesh = new THREE.Mesh(geometry, material);
 
-      // Correct the STL's up-axis first, then spin a parent pivot around the
-      // world Y axis so the model behaves like a turntable instead of tumbling.
+      // Correct the STL up-axis once, then let OrbitControls handle a true
+      // turntable camera orbit so dragging feels natural from any angle.
       mesh.rotation.x = -Math.PI / 2;
-
-      const pivot = new THREE.Group();
-      pivot.add(mesh);
-      scene.add(pivot);
+      scene.add(mesh);
 
       const box = new THREE.Box3().setFromObject(mesh);
       const size = new THREE.Vector3();
       const center = new THREE.Vector3();
       box.getSize(size);
       box.getCenter(center);
-
-      // Recenter the corrected mesh inside the pivot so rotation stays vertical.
       mesh.position.sub(center);
 
       const maxDim = Math.max(size.x, size.y, size.z) || 1;
-      camera.position.set(maxDim * 0.2, maxDim * 0.7, maxDim * 1.9);
-      camera.lookAt(0, maxDim * 0.12, 0);
+      const target = new THREE.Vector3(0, maxDim * 0.08, 0);
+      camera.position.set(maxDim * 0.15, maxDim * 0.62, maxDim * 1.95);
+      camera.lookAt(target);
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.065;
+      controls.enablePan = false;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 1.1;
+      controls.minDistance = maxDim * 0.85;
+      controls.maxDistance = maxDim * 3.1;
+      controls.target.copy(target);
+      controls.update();
+
+      let resumeTimer = null;
+      controls.addEventListener('start', () => {
+        controls.autoRotate = false;
+        if (resumeTimer) clearTimeout(resumeTimer);
+      });
+      controls.addEventListener('end', () => {
+        if (resumeTimer) clearTimeout(resumeTimer);
+        resumeTimer = setTimeout(() => {
+          controls.autoRotate = true;
+        }, 1400);
+      });
 
       if (statusEl) {
-        statusEl.textContent = 'Drag-free auto preview';
+        statusEl.textContent = 'Drag to orbit';
         statusEl.classList.add('is-ready');
+        setTimeout(() => statusEl.classList.add('hidden'), 1200);
       }
 
       const animate = () => {
-        pivot.rotation.y += 0.008;
+        controls.update();
         renderer.render(scene, camera);
         container._raf = requestAnimationFrame(animate);
       };
