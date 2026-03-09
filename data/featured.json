@@ -3,6 +3,6 @@
   "slug": "green-dragon",
   "headline": "Model of the Month",
   "titleOverride": "Green Dragon",
-  "blurb": "A featured dragon model with an in-browser STL preview and direct raw-file download.",
-  "ctaLabel": "Download STL"
+  "blurb": "A featured dragon model loaded directly from the asset repository with an in-browser STL preview.",
+  "ctaLabel": "Download This Model"
 }

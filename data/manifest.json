@@ -6,11 +6,9 @@
       "filename": "green-dragon.stl",
       "format": "stl",
       "tags": ["green", "dragon"],
-      "thumbnail": "",
-      "previewable": true,
       "downloadUrl": "https://raw.githubusercontent.com/EscaladeDev/model-library-assets/main/assets/stl/green-dragon.stl",
       "sourceUrl": "https://github.com/EscaladeDev/model-library-assets/blob/main/assets/stl/green-dragon.stl",
-      "description": "Green dragon STL from the Escalade model library.",
+      "description": "A green dragon model served directly from the model-library-assets repository.",
       "dateAdded": "2026-03-08",
       "featured": true
     }
