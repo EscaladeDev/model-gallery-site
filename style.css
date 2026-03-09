@@ -161,3 +161,5 @@ code { background: rgba(255,255,255,.07); padding: 2px 8px; border-radius: 8px; 
 .brand-mark { display:none; }
 .brand-subtitle { display:none; }
 .viewer-status.is-error { color: #ffb4b4; }
+
+.viewer-status.hidden { display:none !important; }

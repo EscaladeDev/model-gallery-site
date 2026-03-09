@@ -26,7 +26,6 @@ const els = {
   featuredBlurb: document.getElementById('featured-blurb'),
   featuredTags: document.getElementById('featured-tags'),
   featuredDownloadLink: document.getElementById('featured-download-link'),
-  featuredSourceLink: document.getElementById('featured-source-link'),
   featuredViewer: document.getElementById('featured-viewer'),
   featuredLoading: document.getElementById('featured-loading'),
 };
@@ -129,8 +128,8 @@ function createCard(model) {
   const tagsHtml = (model.tags || []).map((tag) => `<span class="card-tag">${escapeHtml(tag)}</span>`).join('');
   const isPreviewable = normalizeText(model.format) === 'stl';
   const previewInner = isPreviewable
-    ? `<div class="card-viewer" data-model-url="${escapeAttribute(model.downloadUrl)}" data-slug="${escapeAttribute(model.slug)}"></div><div class="viewer-status small">Loading preview…</div>`
-    : `<div class="card-preview-placeholder"></div><div class="viewer-status small">Preview unavailable</div>`;
+    ? `<div class="card-viewer" data-model-url="${escapeAttribute(model.downloadUrl)}" data-slug="${escapeAttribute(model.slug)}"></div>`
+    : `<div class="card-preview-placeholder"></div>`;
 
   article.innerHTML = `
     <div class="card-preview">
@@ -146,7 +145,6 @@ function createCard(model) {
       <div class="card-tags">${tagsHtml}</div>
       <div class="card-actions">
         <a class="button button-primary js-download" href="${escapeAttribute(model.downloadUrl)}" data-filename="${escapeAttribute(model.filename || "model")}" target="_blank" rel="noreferrer">Download</a>
-        <a class="button" href="${escapeAttribute(model.sourceUrl || model.downloadUrl)}" target="_blank" rel="noreferrer">Source</a>
       </div>
     </div>
   `;
@@ -201,7 +199,6 @@ function renderFeatured(featuredConfig, models) {
     event.preventDefault();
     triggerDownload(featuredModel.downloadUrl, featuredModel.filename || 'model.stl');
   }, { once: true });
-  els.featuredSourceLink.href = featuredModel.sourceUrl || featuredModel.downloadUrl;
   els.featuredTags.innerHTML = '';
   for (const tag of (featuredModel.tags || []).slice(0, 4)) {
     const span = document.createElement('span');
@@ -307,9 +304,7 @@ function mountStlViewer(container, url, statusEl) {
       });
 
       if (statusEl) {
-        statusEl.textContent = 'Drag to orbit';
-        statusEl.classList.add('is-ready');
-        setTimeout(() => statusEl.classList.add('hidden'), 1200);
+        statusEl.classList.add('hidden');
       }
 
       const animate = () => {
