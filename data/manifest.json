@@ -5,12 +5,12 @@
       "title": "Green Dragon",
       "filename": "green-dragon.stl",
       "format": "stl",
-      "tags": ["dragon", "green"],
+      "tags": ["green", "dragon"],
       "thumbnail": "",
-      "previewUrl": "https://raw.githubusercontent.com/EscaladeDev/model-library-assets/main/assets/stl/green-dragon.stl",
+      "previewable": true,
       "downloadUrl": "https://raw.githubusercontent.com/EscaladeDev/model-library-assets/main/assets/stl/green-dragon.stl",
       "sourceUrl": "https://github.com/EscaladeDev/model-library-assets/blob/main/assets/stl/green-dragon.stl",
-      "description": "A green dragon model loaded directly from the asset repo.",
+      "description": "Green dragon STL from the Escalade model library.",
       "dateAdded": "2026-03-08",
       "featured": true
     }

@@ -1,70 +1,76 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js';
-import { STLLoader } from 'https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/loaders/STLLoader.js';
+import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+import { STLLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/STLLoader.js';
 
 const state = {
   models: [],
   filteredModels: [],
-  featured: null,
   activeTag: null,
-  search: "",
-  format: "all",
-  sort: "featured",
+  search: '',
+  format: 'all',
+  sort: 'featured',
 };
 
 const els = {
-  galleryGrid: document.getElementById("gallery-grid"),
-  emptyState: document.getElementById("empty-state"),
-  popularTags: document.getElementById("popular-tags"),
-  gallerySearch: document.getElementById("gallery-search"),
-  heroSearch: document.getElementById("hero-search"),
-  heroSearchButton: document.getElementById("hero-search-button"),
-  formatSelect: document.getElementById("format-select"),
-  sortSelect: document.getElementById("sort-select"),
-  featuredBadge: document.getElementById("featured-badge"),
-  featuredTitle: document.getElementById("featured-title"),
-  featuredBlurb: document.getElementById("featured-blurb"),
-  featuredTags: document.getElementById("featured-tags"),
-  featuredViewLink: document.getElementById("featured-view-link"),
-  featuredDownloadLink: document.getElementById("featured-download-link"),
-  featuredPreview: document.getElementById("featured-preview"),
+  galleryGrid: document.getElementById('gallery-grid'),
+  emptyState: document.getElementById('empty-state'),
+  popularTags: document.getElementById('popular-tags'),
+  gallerySearch: document.getElementById('gallery-search'),
+  heroSearch: document.getElementById('hero-search'),
+  heroSearchButton: document.getElementById('hero-search-button'),
+  formatSelect: document.getElementById('format-select'),
+  sortSelect: document.getElementById('sort-select'),
+  featuredBadge: document.getElementById('featured-badge'),
+  featuredTitle: document.getElementById('featured-title'),
+  featuredBlurb: document.getElementById('featured-blurb'),
+  featuredTags: document.getElementById('featured-tags'),
+  featuredPreview: document.getElementById('featured-preview'),
+  featuredDownloadLink: document.getElementById('featured-download-link'),
+  featuredSourceLink: document.getElementById('featured-source-link'),
 };
 
-const previewObservers = new WeakMap();
-const activePreviewCleanup = new WeakMap();
+const activeViewers = new Set();
+const loader = new STLLoader();
 
 async function fetchJson(path) {
-  const response = await fetch(path);
+  const response = await fetch(path, { cache: 'no-store' });
   if (!response.ok) throw new Error(`Failed to load ${path}: ${response.status}`);
   return response.json();
 }
 
 function normalizeText(value) {
-  return String(value || "").trim().toLowerCase();
+  return String(value || '').trim().toLowerCase();
 }
 
-function normalizeThumbnail(value) {
-  const v = String(value || "").trim();
-  if (!v || v === "/thumbnails/" || v === "thumbnails/") return "";
-  return v;
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
 }
 
 function computePopularTags(models, limit = 8) {
   const counts = new Map();
   for (const model of models) {
-    for (const tag of model.tags || []) counts.set(tag, (counts.get(tag) || 0) + 1);
+    for (const tag of model.tags || []) {
+      counts.set(tag, (counts.get(tag) || 0) + 1);
+    }
   }
-  return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, limit).map(([tag]) => tag);
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, limit)
+    .map(([tag]) => tag);
 }
 
 function renderPopularTags(models) {
-  const tags = computePopularTags(models);
-  els.popularTags.innerHTML = "";
-  for (const tag of tags) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = `chip${state.activeTag === tag ? " active" : ""}`;
+  els.popularTags.innerHTML = '';
+  for (const tag of computePopularTags(models)) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `chip${state.activeTag === tag ? ' active' : ''}`;
     button.textContent = tag;
-    button.addEventListener("click", () => {
+    button.addEventListener('click', () => {
       state.activeTag = state.activeTag === tag ? null : tag;
       applyFilters();
     });
@@ -72,37 +78,33 @@ function renderPopularTags(models) {
   }
 }
 
-function getPreviewMode(model) {
-  if (normalizeThumbnail(model.thumbnail)) return "Thumbnail";
-  if ((model.format || '').toLowerCase() === 'stl') return "Preview";
-  return "Placeholder";
-}
-
-function sortModels(models) {
-  const items = [...models];
-  if (state.sort === "newest") {
-    items.sort((a, b) => new Date(b.dateAdded || 0).getTime() - new Date(a.dateAdded || 0).getTime());
-    return items;
-  }
-  if (state.sort === "az") {
-    items.sort((a, b) => a.title.localeCompare(b.title));
-    return items;
-  }
-  items.sort((a, b) => {
-    const diff = (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
-    if (diff) return diff;
-    return new Date(b.dateAdded || 0).getTime() - new Date(a.dateAdded || 0).getTime();
-  });
-  return items;
-}
-
 function modelMatches(model) {
   const query = normalizeText(state.search);
-  const haystack = [model.title, model.filename, ...(model.tags || []), model.description || ""].join(" ").toLowerCase();
+  const haystack = [model.title, model.filename, ...(model.tags || []), model.description || '']
+    .join(' ')
+    .toLowerCase();
   const matchesSearch = !query || haystack.includes(query);
   const matchesFormat = state.format === 'all' || normalizeText(model.format) === state.format;
   const matchesTag = !state.activeTag || (model.tags || []).includes(state.activeTag);
   return matchesSearch && matchesFormat && matchesTag;
+}
+
+function sortModels(models) {
+  const items = [...models];
+  if (state.sort === 'newest') {
+    items.sort((a, b) => new Date(b.dateAdded || 0) - new Date(a.dateAdded || 0));
+    return items;
+  }
+  if (state.sort === 'az') {
+    items.sort((a, b) => a.title.localeCompare(b.title));
+    return items;
+  }
+  items.sort((a, b) => {
+    const featuredDiff = (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
+    if (featuredDiff) return featuredDiff;
+    return new Date(b.dateAdded || 0) - new Date(a.dateAdded || 0);
+  });
+  return items;
 }
 
 function applyFilters() {
@@ -122,30 +124,108 @@ function handleSearchInput(value) {
   applyFilters();
 }
 
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
+function cleanupViewers() {
+  for (const destroy of activeViewers) destroy();
+  activeViewers.clear();
+}
+
+function showFallbackPreview(container, label = 'Preview unavailable') {
+  container.innerHTML = '<div class="card-preview-placeholder"></div>';
+  const pill = document.createElement('div');
+  pill.className = 'preview-placeholder-label';
+  pill.textContent = label;
+  container.appendChild(pill);
+}
+
+async function mountStlPreview(container, url) {
+  container.innerHTML = '';
+  const shell = document.createElement('div');
+  shell.className = 'viewer-shell';
+  shell.style.width = '100%';
+  shell.style.height = '100%';
+  container.appendChild(shell);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  shell.appendChild(renderer.domElement);
+
+  const hemi = new THREE.HemisphereLight(0xffffff, 0x223344, 1.2);
+  const dir = new THREE.DirectionalLight(0xffffff, 1.2);
+  dir.position.set(3, 5, 6);
+  scene.add(hemi, dir);
+
+  let mesh;
+  try {
+    const geometry = await loader.loadAsync(url);
+    geometry.computeBoundingBox();
+    geometry.computeVertexNormals();
+    const material = new THREE.MeshStandardMaterial({ color: 0xdbe4ff, metalness: 0.12, roughness: 0.72 });
+    mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    const box = geometry.boundingBox;
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+    mesh.position.sub(center);
+
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    const maxDim = Math.max(size.x, size.y, size.z) || 1;
+    camera.position.set(maxDim * 1.4, maxDim * 0.9, maxDim * 1.6);
+    camera.lookAt(0, 0, 0);
+
+    const resize = () => {
+      const width = shell.clientWidth || 320;
+      const height = shell.clientHeight || 320;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height, false);
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(shell);
+
+    let frameId = 0;
+    const animate = () => {
+      if (mesh) mesh.rotation.y += 0.008;
+      renderer.render(scene, camera);
+      frameId = requestAnimationFrame(animate);
+    };
+    animate();
+
+    const destroy = () => {
+      cancelAnimationFrame(frameId);
+      ro.disconnect();
+      renderer.dispose();
+      geometry.dispose();
+      material.dispose();
+      shell.remove();
+    };
+    activeViewers.add(destroy);
+  } catch (error) {
+    console.error('STL preview failed:', url, error);
+    renderer.dispose();
+    shell.remove();
+    showFallbackPreview(container);
+  }
+}
+
+function previewLabelFor(model) {
+  if (model.thumbnail) return 'Thumbnail';
+  if (model.previewable && normalizeText(model.format) === 'stl') return 'Live Preview';
+  return 'Placeholder';
 }
 
 function createCard(model) {
-  const article = document.createElement("article");
-  article.className = "card";
+  const article = document.createElement('article');
+  article.className = 'card';
   article.id = `model-${model.slug}`;
-  const thumbnail = normalizeThumbnail(model.thumbnail);
-  const tagsHtml = (model.tags || []).map((tag) => `<span class="card-tag">${escapeHtml(tag)}</span>`).join("");
-  const previewContent = thumbnail
-    ? `<img src="${thumbnail}" alt="${escapeHtml(model.title)} preview" loading="lazy" />`
-    : `<div class="card-preview-placeholder"></div>`;
+  const tagsHtml = (model.tags || []).map(tag => `<span class="card-tag">${escapeHtml(tag)}</span>`).join('');
 
   article.innerHTML = `
-    <div class="card-preview" data-model-format="${escapeHtml(model.format || '')}" data-model-url="${escapeHtml(model.previewUrl || model.downloadUrl || '')}">
-      <span class="badge card-badge">${escapeHtml(getPreviewMode(model))}</span>
-      ${previewContent}
-    </div>
+    <div class="card-preview"><span class="badge card-badge">${escapeHtml(previewLabelFor(model))}</span></div>
     <div class="card-body">
       <div class="card-title-row">
         <h3>${escapeHtml(model.title)}</h3>
@@ -154,37 +234,51 @@ function createCard(model) {
       <p class="card-text">${escapeHtml(model.description || 'No description yet.')}</p>
       <div class="card-tags">${tagsHtml}</div>
       <div class="card-actions">
-        <a class="button button-primary" href="${escapeHtml(model.downloadUrl || model.previewUrl || '#')}" target="_blank" rel="noreferrer">Download</a>
-        <a class="button" href="${escapeHtml(model.sourceUrl || model.downloadUrl || '#')}" target="_blank" rel="noreferrer">Source</a>
+        <a class="button button-primary" href="${escapeHtml(model.downloadUrl)}" target="_blank" rel="noreferrer" download>Download</a>
+        <a class="button" href="${escapeHtml(model.sourceUrl || model.downloadUrl)}" target="_blank" rel="noreferrer">Source</a>
       </div>
     </div>
   `;
+
+  const previewEl = article.querySelector('.card-preview');
+  if (model.thumbnail) {
+    const img = document.createElement('img');
+    img.src = model.thumbnail;
+    img.alt = `${model.title} preview`;
+    previewEl.appendChild(img);
+  } else if (model.previewable && normalizeText(model.format) === 'stl') {
+    mountStlPreview(previewEl, model.downloadUrl);
+  } else {
+    showFallbackPreview(previewEl);
+  }
   return article;
 }
 
 function renderGallery(models) {
-  for (const cleanup of activePreviewCleanup.values?.() || []) cleanup?.();
-  els.galleryGrid.innerHTML = "";
+  cleanupViewers();
+  els.galleryGrid.innerHTML = '';
   if (!models.length) {
-    els.emptyState.classList.remove("hidden");
+    els.emptyState.classList.remove('hidden');
     return;
   }
-  els.emptyState.classList.add("hidden");
-  for (const model of models) els.galleryGrid.appendChild(createCard(model));
-  setupVisiblePreviews();
+  els.emptyState.classList.add('hidden');
+  for (const model of models) {
+    els.galleryGrid.appendChild(createCard(model));
+  }
 }
 
 function renderFeatured(featuredConfig, models) {
-  const featuredModel = models.find((model) => model.slug === featuredConfig?.slug) || models.find((m) => m.featured) || models[0];
+  const fallback = models.find(m => m.featured) || models[0];
+  const featuredModel = models.find(m => m.slug === featuredConfig?.slug) || fallback;
   if (!featuredModel) return;
-  els.featuredBadge.textContent = featuredConfig?.headline || 'Featured Model';
+
+  els.featuredBadge.textContent = featuredConfig?.headline || 'Featured';
   els.featuredTitle.textContent = featuredConfig?.titleOverride || featuredModel.title;
   els.featuredBlurb.textContent = featuredConfig?.blurb || featuredModel.description || 'Featured model.';
-  els.featuredDownloadLink.href = featuredModel.downloadUrl || '#';
-  els.featuredViewLink.onclick = (e) => {
-    e.preventDefault();
-    document.getElementById(`model-${featuredModel.slug}`)?.scrollIntoView({behavior:'smooth', block:'center'});
-  };
+  els.featuredDownloadLink.href = featuredModel.downloadUrl;
+  els.featuredDownloadLink.textContent = featuredConfig?.ctaLabel || 'Download';
+  els.featuredSourceLink.href = featuredModel.sourceUrl || featuredModel.downloadUrl;
+
   els.featuredTags.innerHTML = '';
   for (const tag of (featuredModel.tags || []).slice(0, 4)) {
     const span = document.createElement('span');
@@ -192,118 +286,34 @@ function renderFeatured(featuredConfig, models) {
     span.textContent = tag;
     els.featuredTags.appendChild(span);
   }
-  if ((featuredModel.format || '').toLowerCase() === 'stl' && featuredModel.previewUrl) {
-    mountStlPreview(els.featuredPreview, featuredModel.previewUrl, true);
+
+  if (featuredModel.thumbnail) {
+    els.featuredPreview.innerHTML = `<img src="${escapeHtml(featuredModel.thumbnail)}" alt="${escapeHtml(featuredModel.title)} preview" />`;
+  } else if (featuredModel.previewable && normalizeText(featuredModel.format) === 'stl') {
+    mountStlPreview(els.featuredPreview, featuredModel.downloadUrl);
+  } else {
+    showFallbackPreview(els.featuredPreview);
   }
-}
-
-function setupVisiblePreviews() {
-  const previews = document.querySelectorAll('.card-preview[data-model-format="stl"]');
-  const observer = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      if (!entry.isIntersecting) continue;
-      const el = entry.target;
-      observer.unobserve(el);
-      const url = el.dataset.modelUrl;
-      if (url) mountStlPreview(el, url, false);
-    }
-  }, { rootMargin: '200px 0px' });
-
-  previews.forEach((el) => observer.observe(el));
-}
-
-function mountStlPreview(container, url, isLarge) {
-  container.innerHTML = '';
-  container.classList.add('is-rendering');
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(40, container.clientWidth / Math.max(container.clientHeight, 1), 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setSize(container.clientWidth || 300, container.clientHeight || 300);
-  container.appendChild(renderer.domElement);
-
-  const ambient = new THREE.AmbientLight(0xffffff, 1.8);
-  scene.add(ambient);
-  const dir = new THREE.DirectionalLight(0xffffff, 1.5);
-  dir.position.set(4, 7, 6);
-  scene.add(dir);
-
-  const material = new THREE.MeshStandardMaterial({ color: 0xc9d5ff, metalness: 0.12, roughness: 0.72 });
-  const loader = new STLLoader();
-
-  let mesh;
-  let frame = 0;
-  let disposed = false;
-
-  const cleanup = () => {
-    disposed = true;
-    cancelAnimationFrame(frame);
-    renderer.dispose();
-    mesh?.geometry?.dispose?.();
-    material.dispose();
-    container.innerHTML = '<div class="card-preview-placeholder"></div>';
-  };
-  activePreviewCleanup.set(container, cleanup);
-
-  loader.load(url, (geometry) => {
-    if (disposed) return;
-    geometry.computeVertexNormals();
-    mesh = new THREE.Mesh(geometry, material);
-    geometry.center();
-    scene.add(mesh);
-
-    const box = new THREE.Box3().setFromObject(mesh);
-    const size = box.getSize(new THREE.Vector3()).length() || 1;
-    camera.position.set(size * 0.45, size * 0.28, size * (isLarge ? 0.65 : 0.8));
-    camera.lookAt(0, 0, 0);
-
-    const animate = () => {
-      if (disposed) return;
-      if (mesh) mesh.rotation.y += isLarge ? 0.008 : 0.01;
-      renderer.render(scene, camera);
-      frame = requestAnimationFrame(animate);
-    };
-    animate();
-  }, undefined, () => {
-    container.classList.remove('is-rendering');
-    container.innerHTML = '<div class="card-preview-placeholder"></div>';
-  });
-
-  const resizeObserver = new ResizeObserver(() => {
-    const w = Math.max(container.clientWidth, 1);
-    const h = Math.max(container.clientHeight, 1);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
-  });
-  resizeObserver.observe(container);
 }
 
 async function init() {
   try {
     const [manifest, featured] = await Promise.all([
       fetchJson('./data/manifest.json'),
-      fetchJson('./data/featured.json').catch(() => ({})),
+      fetchJson('./data/featured.json')
     ]);
-
-    state.models = Array.isArray(manifest.models) ? manifest.models.map((m) => ({
-      ...m,
-      thumbnail: normalizeThumbnail(m.thumbnail),
-    })) : [];
-    state.featured = featured;
-
+    state.models = Array.isArray(manifest.models) ? manifest.models : [];
     renderFeatured(featured, state.models);
     applyFilters();
 
-    els.gallerySearch.addEventListener('input', (event) => handleSearchInput(event.target.value));
-    els.heroSearch.addEventListener('input', (event) => handleSearchInput(event.target.value));
+    els.gallerySearch.addEventListener('input', (e) => handleSearchInput(e.target.value));
+    els.heroSearch.addEventListener('input', (e) => handleSearchInput(e.target.value));
     els.heroSearchButton.addEventListener('click', () => document.getElementById('browse').scrollIntoView({ behavior: 'smooth' }));
-    els.formatSelect.addEventListener('change', (event) => { state.format = event.target.value; applyFilters(); });
-    els.sortSelect.addEventListener('change', (event) => { state.sort = event.target.value; applyFilters(); });
+    els.formatSelect.addEventListener('change', (e) => { state.format = e.target.value; applyFilters(); });
+    els.sortSelect.addEventListener('change', (e) => { state.sort = e.target.value; applyFilters(); });
   } catch (error) {
     console.error(error);
-    els.galleryGrid.innerHTML = `<div class="empty-state"><h3>Failed to load catalog</h3><p>Check that <code>data/manifest.json</code> and <code>data/featured.json</code> exist and are valid.</p></div>`;
+    els.galleryGrid.innerHTML = '<div class="empty-state"><h3>Failed to load catalog</h3><p>Check that data/manifest.json and data/featured.json exist and contain valid JSON.</p></div>';
   }
 }
 
