@@ -1,8 +1,8 @@
 {
   "month": "2026-03",
   "slug": "green-dragon",
-  "headline": "Model of the Month",
+  "headline": "Featured Model",
   "titleOverride": "Green Dragon",
-  "blurb": "Now shown with a real in-browser STL preview instead of a blank card.",
-  "ctaLabel": "Download File"
+  "blurb": "A browser-rendered STL preview loaded directly from the model-library-assets repo.",
+  "ctaLabel": "Download This Model"
 }
