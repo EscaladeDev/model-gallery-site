@@ -264,14 +264,24 @@ function mountStlViewer(container, url, statusEl) {
         roughness: 0.7,
       });
       const mesh = new THREE.Mesh(geometry, material);
+
+      // Most tabletop STL exports are Z-up. Rotate to Y-up so the model presents
+      // upright and spins on a more natural turntable axis.
+      mesh.rotation.x = -Math.PI / 2;
       scene.add(mesh);
 
       const box = new THREE.Box3().setFromObject(mesh);
       const size = new THREE.Vector3();
+      const center = new THREE.Vector3();
       box.getSize(size);
+      box.getCenter(center);
+
+      // Recenter after orientation so the model spins around its visual middle.
+      mesh.position.sub(center);
+
       const maxDim = Math.max(size.x, size.y, size.z) || 1;
-      camera.position.set(maxDim * 1.15, maxDim * 0.8, maxDim * 1.4);
-      camera.lookAt(0, 0, 0);
+      camera.position.set(maxDim * 0.2, maxDim * 0.65, maxDim * 1.85);
+      camera.lookAt(0, maxDim * 0.15, 0);
 
       if (statusEl) {
         statusEl.textContent = 'Drag-free auto preview';
@@ -279,7 +289,7 @@ function mountStlViewer(container, url, statusEl) {
       }
 
       const animate = () => {
-        mesh.rotation.y += 0.01;
+        mesh.rotation.y += 0.008;
         renderer.render(scene, camera);
         container._raf = requestAnimationFrame(animate);
       };
