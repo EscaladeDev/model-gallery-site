@@ -1,5 +1,5 @@
-import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
-import { STLLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/STLLoader.js';
+import * as THREE from 'https://esm.sh/three@0.160.0';
+import { STLLoader } from 'https://esm.sh/three@0.160.0/examples/jsm/loaders/STLLoader.js';
 
 const state = {
   models: [],
@@ -144,7 +144,7 @@ function createCard(model) {
       <p class="card-text">${escapeHtml(model.description || 'No description yet.')}</p>
       <div class="card-tags">${tagsHtml}</div>
       <div class="card-actions">
-        <a class="button button-primary" href="${escapeAttribute(model.downloadUrl)}" target="_blank" rel="noreferrer">Download</a>
+        <a class="button button-primary js-download" href="${escapeAttribute(model.downloadUrl)}" data-filename="${escapeAttribute(model.filename || "model")}" target="_blank" rel="noreferrer">Download</a>
         <a class="button" href="${escapeAttribute(model.sourceUrl || model.downloadUrl)}" target="_blank" rel="noreferrer">Source</a>
       </div>
     </div>
@@ -162,6 +162,12 @@ function renderGallery(models) {
   for (const model of models) {
     els.galleryGrid.appendChild(createCard(model));
   }
+  els.galleryGrid.querySelectorAll('.js-download').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      triggerDownload(link.href, link.dataset.filename || 'model');
+    });
+  });
   mountGalleryViewers();
 }
 
@@ -190,6 +196,10 @@ function renderFeatured(featuredConfig, models) {
   els.featuredTitle.textContent = featuredConfig.titleOverride || featuredModel.title;
   els.featuredBlurb.textContent = featuredConfig.blurb || featuredModel.description || 'Featured model.';
   els.featuredDownloadLink.href = featuredModel.downloadUrl;
+  els.featuredDownloadLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    triggerDownload(featuredModel.downloadUrl, featuredModel.filename || 'model.stl');
+  }, { once: true });
   els.featuredSourceLink.href = featuredModel.sourceUrl || featuredModel.downloadUrl;
   els.featuredTags.innerHTML = '';
   for (const tag of (featuredModel.tags || []).slice(0, 4)) {
@@ -199,6 +209,17 @@ function renderFeatured(featuredConfig, models) {
     els.featuredTags.appendChild(span);
   }
   mountStlViewer(els.featuredViewer, featuredModel.downloadUrl, els.featuredLoading);
+}
+
+
+function triggerDownload(url, filename) {
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename || '';
+  link.rel = 'noreferrer';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 }
 
 function mountGalleryViewers() {

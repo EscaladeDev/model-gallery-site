@@ -156,3 +156,7 @@ code { background: rgba(255,255,255,.07); padding: 2px 8px; border-radius: 8px; 
   .hero-copy, .spotlight-card { padding:22px; }
   .hero { padding-top:28px; }
 }
+
+.brand-mark { display:none; }
+.brand-subtitle { display:none; }
+.viewer-status.is-error { color: #ffb4b4; }
