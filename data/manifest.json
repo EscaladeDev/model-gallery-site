@@ -9,7 +9,7 @@
       "thumbnail": "",
       "downloadUrl": "https://raw.githubusercontent.com/EscaladeDev/model-library-assets/main/assets/stl/green-dragon.stl",
       "sourceUrl": "https://github.com/EscaladeDev/model-library-assets/blob/main/assets/stl/green-dragon.stl",
-      "description": "Detailed dragon sculpt loaded directly from the asset repository and previewed live in-browser.",
+      "description": "Large dragon miniature.",
       "dateAdded": "2026-03-08",
       "featured": true
     },
@@ -22,7 +22,7 @@
       "thumbnail": "",
       "previewable": true,
       "downloadUrl": "https://raw.githubusercontent.com/EscaladeDev/model-library-assets/main/assets/stl/ice-dragon.stl",
-      "description": "Large dragon miniature with wings spread for dramatic display.",
+      "description": "Large dragon miniature.",
       "dateAdded": "2026-03-09",
       "featured": false
     },
@@ -35,7 +35,7 @@
       "thumbnail": "",
       "previewable": true,
       "downloadUrl": "https://raw.githubusercontent.com/EscaladeDev/model-library-assets/main/assets/stl/club-brute-armor.stl",
-      "description": "Large dragon miniature with wings spread for dramatic display.",
+      "description": "Large brute armor miniature.",
       "dateAdded": "2026-03-09",
       "featured": false
     } 
