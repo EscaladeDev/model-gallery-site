@@ -265,10 +265,13 @@ function mountStlViewer(container, url, statusEl) {
       });
       const mesh = new THREE.Mesh(geometry, material);
 
-      // Most tabletop STL exports are Z-up. Rotate to Y-up so the model presents
-      // upright and spins on a more natural turntable axis.
+      // Correct the STL's up-axis first, then spin a parent pivot around the
+      // world Y axis so the model behaves like a turntable instead of tumbling.
       mesh.rotation.x = -Math.PI / 2;
-      scene.add(mesh);
+
+      const pivot = new THREE.Group();
+      pivot.add(mesh);
+      scene.add(pivot);
 
       const box = new THREE.Box3().setFromObject(mesh);
       const size = new THREE.Vector3();
@@ -276,12 +279,12 @@ function mountStlViewer(container, url, statusEl) {
       box.getSize(size);
       box.getCenter(center);
 
-      // Recenter after orientation so the model spins around its visual middle.
+      // Recenter the corrected mesh inside the pivot so rotation stays vertical.
       mesh.position.sub(center);
 
       const maxDim = Math.max(size.x, size.y, size.z) || 1;
-      camera.position.set(maxDim * 0.2, maxDim * 0.65, maxDim * 1.85);
-      camera.lookAt(0, maxDim * 0.15, 0);
+      camera.position.set(maxDim * 0.2, maxDim * 0.7, maxDim * 1.9);
+      camera.lookAt(0, maxDim * 0.12, 0);
 
       if (statusEl) {
         statusEl.textContent = 'Drag-free auto preview';
@@ -289,7 +292,7 @@ function mountStlViewer(container, url, statusEl) {
       }
 
       const animate = () => {
-        mesh.rotation.y += 0.008;
+        pivot.rotation.y += 0.008;
         renderer.render(scene, camera);
         container._raf = requestAnimationFrame(animate);
       };
