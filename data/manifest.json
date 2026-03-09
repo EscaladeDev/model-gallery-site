@@ -12,6 +12,32 @@
       "description": "Detailed dragon sculpt loaded directly from the asset repository and previewed live in-browser.",
       "dateAdded": "2026-03-08",
       "featured": true
-    }
+    },
+    {
+      "slug": "ice-dragon",
+      "title": "Ice Dragon",
+      "filename": "ice-dragon.stl",
+      "format": "stl",
+      "tags": ["ice", "dragon"],
+      "thumbnail": "",
+      "previewable": true,
+      "downloadUrl": "https://raw.githubusercontent.com/EscaladeDev/model-library-assets/main/assets/stl/ice-dragon.stl",
+      "description": "Large dragon miniature with wings spread for dramatic display.",
+      "dateAdded": "2026-03-09",
+      "featured": false
+    },
+    {
+      "slug": "club-brute-armor",
+      "title": "Club Brute Armor",
+      "filename": "club-brute-armor.stl",
+      "format": "stl",
+      "tags": ["club", "brute", "armor"],
+      "thumbnail": "",
+      "previewable": true,
+      "downloadUrl": "https://raw.githubusercontent.com/EscaladeDev/model-library-assets/main/assets/stl/club-brute-armor.stl",
+      "description": "Large dragon miniature with wings spread for dramatic display.",
+      "dateAdded": "2026-03-09",
+      "featured": false
+    } 
   ]
 }
