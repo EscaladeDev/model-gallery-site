@@ -10,7 +10,7 @@
 <body>
   <header class="site-header">
     <div class="container site-header-inner">
-      <a class="brand" href="#top">
+      <a class="brand" href="./">
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-copy">
           <span class="brand-title">Escalade Model Gallery</span>
@@ -19,44 +19,47 @@
       </a>
 
       <nav class="nav" aria-label="Primary">
-        <a class="nav-link" href="#featured">Featured</a>
         <a class="nav-link" href="#browse">Browse</a>
+        <a class="nav-link" href="#featured">Featured</a>
         <a class="button" href="https://github.com/EscaladeDev/model-library-assets" target="_blank" rel="noreferrer">Asset Repo</a>
       </nav>
     </div>
   </header>
 
-  <main id="top">
+  <main>
     <section class="hero">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <span class="eyebrow">Searchable • Curated • STL preview-enabled</span>
+          <span class="eyebrow">Searchable • Previewable • Direct-downloadable</span>
           <h1>Browse 3D models with a premium library feel.</h1>
           <p>
-            Explore downloadable models by tag, preview them directly in the browser,
-            and jump straight to the raw asset files in the library repo.
+            Explore downloadable models by tag, preview STL files directly in the browser,
+            and pull source assets straight from the Escalade model library.
           </p>
 
           <div class="search-shell">
-            <input id="hero-search" class="search-input" type="search" placeholder="Search models or tags..." aria-label="Search models" />
-            <button id="hero-search-button" class="button button-primary" type="button">Search</button>
+            <input id="hero-search" class="search-input" type="search" placeholder="Search models, tags, or filenames..." aria-label="Search models" />
+            <button id="hero-search-button" class="button button-primary" type="button">Browse</button>
           </div>
 
           <div class="hero-actions">
             <a class="button button-primary" href="#browse">Browse Library</a>
-            <a class="button" href="https://github.com/EscaladeDev/model-library-assets/tree/main/assets/stl" target="_blank" rel="noreferrer">View STL Folder</a>
+            <a class="button" href="https://github.com/EscaladeDev/model-library-assets" target="_blank" rel="noreferrer">View Asset Repo</a>
           </div>
         </div>
 
         <aside class="spotlight-card" id="featured">
           <span class="badge" id="featured-badge">Model of the Month</span>
-          <div class="spotlight-preview" id="featured-preview"></div>
+          <div class="viewer-shell viewer-featured">
+            <div id="featured-viewer" class="viewer-canvas" aria-label="Featured model preview"></div>
+            <div id="featured-loading" class="viewer-status">Loading preview…</div>
+          </div>
           <h2 id="featured-title">Loading featured model...</h2>
           <p id="featured-blurb">Featured content is loading.</p>
           <div class="tags" id="featured-tags"></div>
           <div class="hero-actions">
-            <button class="button button-primary" id="featured-view-link" type="button">Find in Library</button>
-            <button class="button" id="featured-download-link" type="button">Download</button>
+            <a class="button button-primary" id="featured-download-link" href="#" target="_blank" rel="noreferrer">Download Model</a>
+            <a class="button" id="featured-source-link" href="#" target="_blank" rel="noreferrer">Source File</a>
           </div>
         </aside>
       </div>
@@ -104,11 +107,10 @@
           <strong>Escalade Model Gallery</strong>
           <div>Premium static model catalog for GitHub Pages.</div>
         </div>
-
         <div class="footer-links">
           <a href="https://github.com/EscaladeDev/model-gallery-site" target="_blank" rel="noreferrer">Site Repo</a>
           <a href="https://github.com/EscaladeDev/model-library-assets" target="_blank" rel="noreferrer">Asset Repo</a>
-          <a href="https://github.com/EscaladeDev/model-library-assets/tree/main/assets/stl" target="_blank" rel="noreferrer">STL Folder</a>
+          <a href="https://raw.githubusercontent.com/EscaladeDev/model-library-assets/main/assets/stl/green-dragon.stl" target="_blank" rel="noreferrer">Raw STL</a>
         </div>
       </div>
     </div>
