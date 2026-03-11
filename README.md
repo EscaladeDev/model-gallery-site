@@ -4,10 +4,6 @@ GitHub Pages site for browsing, previewing, searching, and downloading 3D models
 
 ## Live structure
 
-This repo is a static site and is expected to publish a root `index.html`.
-
-Current starter implementation includes:
-
 - direct JSON-driven catalog loading from `data/manifest.json`
 - featured model loading from `data/featured.json`
 - live STL preview using three.js + STLLoader
@@ -19,18 +15,6 @@ Current starter implementation includes:
 Asset source files live here:
 
 `https://github.com/EscaladeDev/model-library-assets`
-
-## Local testing
-
-Because the site fetches local JSON files, test it through a local web server rather than opening `index.html` directly from the filesystem.
-
-Examples:
-
-```bash
-python3 -m http.server
-```
-
-or use GitHub Pages.
 
 ## License
 
